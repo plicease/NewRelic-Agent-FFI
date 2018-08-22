@@ -25,6 +25,13 @@ This module provides bindings for the [NewRelic](https://docs.newrelic.com/docs/
 
 It is a drop in replacement for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) that is implemented using [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus) instead of XS and C++.
 
+Why use this module instead of the other one?
+As of this writing, you should definitely not use it in production!  See the warning above and the caveats below.
+One advantage is that this module uses powerful [Alien](https://metacpan.org/pod/Alien) technology to source the NewRelic agent libraries.  The other module
+has [a serious bug which will break when the install files are removed](https://github.com/aanari/NewRelic-Agent/issues/2).
+Another advantage to this module is that it does not require a C++ compiler, or even a C compiler for that matter.  I think
+requiring C++ is overkill for using the NewRelic SDK.
+
 ## CAVEATS
 
 This module attempts to replicate the same interface as [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent), and this module includes a superset of the same tests.  
