@@ -5,6 +5,13 @@ use warnings;
 use 5.008001;
 use FFI::Platypus;
 use Alien::nragent;
+use base qw( Exporter );
+
+our @EXPORT = qw(
+  newrelic_init newrelic_embed_collector newrelic_transaction_begin newrelic_transaction_set_name newrelic_transaction_set_request_url newrelic_transaction_set_max_trace_segments newrelic_transaction_set_category
+  newrelic_transaction_set_type_web newrelic_transaction_set_type_other newrelic_transaction_add_attribute newrelic_transaction_notice_error newrelic_transaction_end newrelic_record_metric newrelic_record_cpu_usage
+  newrelic_record_memory_usage newrelic_segment_generic_begin newrelic_segment_datastore_begin newrelic_segment_external_begin newrelic_segment_end
+);
 
 # ABSTRACT: Perl Agent for NewRelic APM
 # VERSION
