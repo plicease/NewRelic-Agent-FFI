@@ -19,9 +19,17 @@ Perl Agent for NewRelic APM
 
 # DESCRIPTION
 
+**WARNING**: This module should be considered Alpha Quality!
+
 This module provides bindings for the [NewRelic](https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk) Agent SDK.
 
 It is a drop in replacement for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) that is implemented using [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus) instead of XS and C++.
+
+## CAVEATS
+
+This module attempts to replicate the same interface as [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent), and this module includes a superset of the same tests.  
+Unfortunately, the existing test suite for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) is completely insufficient to have a high degree of confidence that
+either module works.
 
 # AUTHOR
 

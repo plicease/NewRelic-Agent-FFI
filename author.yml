@@ -9,6 +9,7 @@ pod_spelling_system:
     - APM
     - NewRelic
     - SDK
+    - superset
 
 pod_coverage:
   skip: 0

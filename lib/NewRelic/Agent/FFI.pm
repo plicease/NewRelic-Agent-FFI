@@ -97,14 +97,30 @@ $ffi->attach( [ newrelic_transaction_notice_error => 'notice_transaction_error' 
   $xsub->(@_);
 });
 
-# TODO: end_transaction
-# TODO: record_metric
-# TODO: record_cpu_usage
-# TODO: record_memory_usage
-# TODO: begin_generic_segment
-# TODO: begin_datastore_segment
-# TODO: begin_external_segment
-# TODO: end_segment
+$ffi->attach( [ newrelic_transaction_end => 'end_transaction' ] => [ 'long' ] => 'int' => \&_set1 );
+$ffi->attach( [ newrelic_record_metric => 'record_metric' ] => [ 'string', 'double'] => 'int' => \&_set2 );
+$ffi->attach( [ newrelic_record_cpu_usage => 'record_cpu_usage' ] => [ 'double', 'double' ] => 'int' => \&_set2);
+$ffi->attach( [ newrelic_record_memory_usage => 'record_memory_usage' ] => [ 'double' ] => 'int' => \&_set1);
+
+$ffi->attach( [ newrelic_segment_generic_begin => 'begin_generic_segment' ] => [ 'long', 'long', 'string' ] => 'long' => sub {
+  my $xsub = shift;
+  my $self = shift;
+  $xsub->(@_);
+});
+
+$ffi->attach( [ newrelic_segment_datastore_begin => 'begin_datastore_segment' ] => [ 'long', 'long', 'string', 'string', 'string' ] => 'long' => sub {
+  my $xsub = shift;
+  my $self = shift;
+  $xsub->(@_);
+});
+
+$ffi->attach( [ newrelic_segment_external_begin => 'begin_external_segment' ] => [ 'long', 'long', 'string', 'string' ] => 'long' => sub {
+  my $xsub = shift;
+  my $self = shift;
+  $xsub->(@_);
+});
+
+$ffi->attach( [ newrelic_segment_end => 'end_segment' ] => [ 'long', 'long' ] => 'int' => \&_set2);
 
 sub get_license_key { shift->{license_key} }
 sub get_app_name { shift->{app_name} }
@@ -130,8 +146,16 @@ sub get_app_language_version { shift->{app_language_version} }
 
 =head1 DESCRIPTION
 
+B<WARNING>: This module should be considered Alpha Quality!
+
 This module provides bindings for the L<NewRelic|https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk> Agent SDK.
 
 It is a drop in replacement for L<NewRelic::Agent> that is implemented using L<FFI::Platypus> instead of XS and C++.
+
+=head2 CAVEATS
+
+This module attempts to replicate the same interface as L<NewRelic::Agent>, and this module includes a superset of the same tests.  
+Unfortunately, the existing test suite for L<NewRelic::Agent> is completely insufficient to have a high degree of confidence that
+either module works.
 
 =cut
