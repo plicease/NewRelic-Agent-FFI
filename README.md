@@ -4,9 +4,9 @@ Perl Agent for NewRelic APM
 
 # SYNOPSIS
 
-    use NewRelic::Agent;
+    use NewRelic::Agent::FFI;
     
-    my $agent = NewRelic:Agent->new(
+    my $agent = NewRelic:Agent::FFI->new(
       license_key => 'abc123',
       app_name    => 'REST API',
     );

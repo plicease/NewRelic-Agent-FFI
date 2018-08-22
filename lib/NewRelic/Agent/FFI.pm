@@ -131,9 +131,9 @@ sub get_app_language_version { shift->{app_language_version} }
 
 =head1 SYNOPSIS
 
- use NewRelic::Agent;
+ use NewRelic::Agent::FFI;
  
- my $agent = NewRelic:Agent->new(
+ my $agent = NewRelic:Agent::FFI->new(
    license_key => 'abc123',
    app_name    => 'REST API',
  );
