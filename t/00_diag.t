@@ -11,7 +11,9 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Alien::nragent
+  Carp
   ExtUtils::MakeMaker
+  FFI::Platypus
   Test2::V0
 );
 
