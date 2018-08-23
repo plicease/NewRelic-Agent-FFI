@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added tests and fixed a number of bugs that they uncovered
+  - Documentation coverage for all methods.
 
 0.01      2018-08-22 05:28:51 -0400
   - initial version
