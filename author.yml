@@ -10,10 +10,10 @@ pod_spelling_system:
     - NewRelic
     - SDK
     - superset
+    - datastore
 
 pod_coverage:
   skip: 0
   # format is "Class#method" or "Class",regex allowed
   # for either Class or method.
-  private:
-    - NewRelic::Agent::FFI
+  private: []
