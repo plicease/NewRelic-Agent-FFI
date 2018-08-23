@@ -15,10 +15,6 @@ my $license_key = $ENV{NEWRELIC_AGENT_FFI_TEST};
 my $nr;
 
 # TODO: test for set_transaction_category    ( newrelic_transaction_set_category )
-# TODO: test for notice_transaction_error    ( newrelic_transaction_notice_error )
-# TODO: test for record_metric               ( newrelic_record_metric            )
-# TODO: test for record_cpu_usage            ( newrelic_record_cpu_usage         )
-# TODO: test for record_memory_usage         ( newrelic_record_memory_usage      )
 
 subtest 'setup' => sub {
 
@@ -32,6 +28,14 @@ subtest 'setup' => sub {
   ok 1, 'embed_collector';
   
   is $nr->init, 0, 'init';
+};
+
+subtest 'metrics' => sub {
+
+  is $nr->record_metric('furlongs per fortnight' => 0.235), 0, 'newrelic_record_metric';
+  is $nr->record_cpu_usage(1.2,3.4), 0, 'record_cpu_usage';
+  is $nr->record_memory_usage(42.43), 0, 'record_memory_usage';
+
 };
 
 subtest "transaction $_ (web)" => sub {
@@ -84,6 +88,22 @@ subtest "transaction $_ (web)" => sub {
 
   is $nr->end_transaction($tx), 0, 'end_transaction';
 } for 1;
+
+subtest 'transaction with error' => sub {
+
+  my $tx = $nr->begin_transaction;
+  ok $tx, "begin_transaction";
+  note "tx = $tx";
+  
+  is $nr->set_transaction_request_url($tx, 'http://127.0.0.1/foo/bar/baz'), 0, 'set_transaction_request_url';
+  is $nr->set_transaction_type_web($tx), 0, 'set_transaction_type_web';
+  is $nr->set_transaction_name($tx, "/bar/$$"), 0, 'set_transaction_name';
+  is $nr->add_transaction_attribute($tx, user_id => 'blarpho'), 0, 'add_transaction_attribute';
+
+  is $nr->notice_transaction_error($tx, 'normal', 'ieeieieie something went wrong!', 'one:two:three', ':'), 0, 'notice_transaction_error';
+  
+  is $nr->end_transaction($tx), 0, 'end_transaction';
+};
 
 subtest 'transaction $_ (other)' => sub {
 
