@@ -267,7 +267,7 @@ $ffi->attach( [ newrelic_transaction_add_attribute => 'add_transaction_attribute
 
 =head2 notice_transaction_error
 
- my $status = notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
+ my $status = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
 
 Identify an error that occurred during the transaction. The first identified
 error is sent with each transaction.
@@ -378,6 +378,8 @@ Get the application name.
 Get the language name (usually C<perl>).
 
 =head2 get_app_language_version
+
+ my $version = $agent->get_app_language_version;
 
 Get the language version.
 
