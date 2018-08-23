@@ -119,7 +119,7 @@ $ffi->attach( newrelic_segment_generic_begin => [ 'long', 'long', 'string' ] => 
 
 =cut
 
-$ffi->attach( newrelic_segment_datastore_begin => [ 'long', 'long', 'string', 'string', 'string' ] => 'long' );
+$ffi->attach( newrelic_segment_datastore_begin => [ 'long', 'long', 'string', 'string', 'string', 'string', 'opaque' ] => 'long' );
 
 =head2 newrelic_segment_external_begin
 

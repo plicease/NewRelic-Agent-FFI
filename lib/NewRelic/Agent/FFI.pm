@@ -41,6 +41,7 @@ sub new
 
 my $ffi = FFI::Platypus->new;
 $ffi->lib(Alien::nragent->dynamic_libs);
+my $newrelic_basic_literal_replacement_obfuscator = $ffi->find_symbol('newrelic_basic_literal_replacement_obfuscator');
 
 sub embed_collector
 {
@@ -56,7 +57,7 @@ sub embed_collector
   }
 }
 
-$ffi->attach( [ newrelic_init => 'init' ] => [ 'string', 'string', 'string', 'string' ] => 'void' => sub {
+$ffi->attach( [ newrelic_init => 'init' ] => [ 'string', 'string', 'string', 'string' ] => 'int' => sub {
   my($xsub, $self) = @_;
   $xsub->(
     $self->get_license_key,
@@ -70,10 +71,19 @@ $ffi->attach( [ newrelic_transaction_begin => 'begin_transaction' ] => [] => 'lo
   shift->();
 });
 
+sub _set1
+{
+  $_[0]->($_[2]);
+}
+
 sub _set2
 {
-  # basicually ignore $self, and pass the rest in as arguments
-  $_[0]->($_[2],$_[3]);
+  $_[0]->(@_[2,3]);
+}
+
+sub _set3
+{
+  $_[0]->(@_[2,3,4]);
 }
 
 $ffi->attach( [ newrelic_transaction_set_name               => 'set_transaction_name'               ] => [ 'long', 'string' ] => 'int' => \&_set2 );
@@ -81,15 +91,11 @@ $ffi->attach( [ newrelic_transaction_set_request_url        => 'set_transaction_
 $ffi->attach( [ newrelic_transaction_set_max_trace_segments => 'set_transaction_max_trace_segments' ] => [ 'long', 'int'    ] => 'int' => \&_set2 );
 $ffi->attach( [ newrelic_transaction_set_category           => 'set_transaction_category'           ] => [ 'long', 'string' ] => 'int' => \&_set2 );
 
-sub _set1
-{
-  $_[0]->($_[2]);
-}
 
 $ffi->attach( [ newrelic_transaction_set_type_web   => 'set_transaction_type_web'   ] => [ 'long' ] => 'int' => \&_set1 );
 $ffi->attach( [ newrelic_transaction_set_type_other => 'set_transaction_type_other' ] => [ 'long' ] => 'int' => \&_set1 );
 
-$ffi->attach( [ newrelic_transaction_add_attribute => 'add_transaction_attribute' ] => [ 'long', 'string', 'string' ] => 'int' => \&_set2);
+$ffi->attach( [ newrelic_transaction_add_attribute => 'add_transaction_attribute' ] => [ 'long', 'string', 'string' ] => 'int' => \&_set3);
 
 $ffi->attach( [ newrelic_transaction_notice_error => 'notice_transaction_error' ] => [ 'long', 'string', 'string', 'string', 'string' ] => 'int' => sub {
   my $xsub = shift;
@@ -108,10 +114,8 @@ $ffi->attach( [ newrelic_segment_generic_begin => 'begin_generic_segment' ] => [
   $xsub->(@_);
 });
 
-$ffi->attach( [ newrelic_segment_datastore_begin => 'begin_datastore_segment' ] => [ 'long', 'long', 'string', 'string', 'string' ] => 'long' => sub {
-  my $xsub = shift;
-  my $self = shift;
-  $xsub->(@_);
+$ffi->attach( [ newrelic_segment_datastore_begin => 'begin_datastore_segment' ] => [ 'long', 'long', 'string', 'string', 'string', 'string', 'opaque' ] => 'long' => sub {
+  $_[0]->(@_[2,3,4,5,6,7], $newrelic_basic_literal_replacement_obfuscator);
 });
 
 $ffi->attach( [ newrelic_segment_external_begin => 'begin_external_segment' ] => [ 'long', 'long', 'string', 'string' ] => 'long' => sub {
