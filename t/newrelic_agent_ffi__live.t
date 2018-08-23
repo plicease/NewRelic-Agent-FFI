@@ -14,6 +14,12 @@ use Time::HiRes qw( sleep );
 my $license_key = $ENV{NEWRELIC_AGENT_FFI_TEST};
 my $nr;
 
+# TODO: test for set_transaction_category    ( newrelic_transaction_set_category )
+# TODO: test for notice_transaction_error    ( newrelic_transaction_notice_error )
+# TODO: test for record_metric               ( newrelic_record_metric            )
+# TODO: test for record_cpu_usage            ( newrelic_record_cpu_usage         )
+# TODO: test for record_memory_usage         ( newrelic_record_memory_usage      )
+
 subtest 'setup' => sub {
 
   $nr = NewRelic::Agent::FFI->new(
@@ -38,6 +44,7 @@ subtest "transaction $_ (web)" => sub {
   is $nr->set_transaction_type_web($tx), 0, 'set_transaction_type_web';
   is $nr->set_transaction_name($tx, "/foo/$$"), 0, 'set_transaction_name';
   is $nr->add_transaction_attribute($tx, user_id => 'blarpho'), 0, 'add_transaction_attribute';
+  is $nr->set_transaction_max_trace_segments($tx, 1000), 0, 'set_transaction_max_trace_segments';
   
   subtest 'generic segment' => sub {
 
