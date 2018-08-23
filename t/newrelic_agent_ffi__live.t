@@ -38,7 +38,7 @@ subtest 'metrics' => sub {
 
 };
 
-subtest "transaction $_ (web)" => sub {
+subtest "transaction (web)" => sub {
 
   my $tx = $nr->begin_transaction;
   ok $tx, "begin_transaction";
@@ -87,7 +87,7 @@ subtest "transaction $_ (web)" => sub {
   };
 
   is $nr->end_transaction($tx), 0, 'end_transaction';
-} for 1;
+};
 
 subtest 'transaction with error' => sub {
 
@@ -105,7 +105,7 @@ subtest 'transaction with error' => sub {
   is $nr->end_transaction($tx), 0, 'end_transaction';
 };
 
-subtest 'transaction $_ (other)' => sub {
+subtest "transaction (other)" => sub {
 
   my $tx = $nr->begin_transaction;
   ok $tx, "begin_transaction";
@@ -118,6 +118,6 @@ subtest 'transaction $_ (other)' => sub {
   sleep rand 1;
 
   is $nr->end_transaction($tx), 0, 'end_transaction';
-} for 1;
+};
 
 done_testing;
