@@ -67,25 +67,25 @@ Why use the other module instead of this one?
 
 Instantiates a new NewRelic::Agent client object.  Options include:
 
-- - `license_key`
+- `license_key`
 
     A valid NewRelic license key for your account.
 
     This value is also automatically sourced from the `NEWRELIC_LICENSE_KEY` environment variable.
 
-- - `app_name`
+- `app_name`
 
     The name of your application.
 
     This value is also automatically sourced from the `NEWRELIC_APP_NAME` environment variable.
 
-- - `app_language`
+- `app_language`
 
     The language that your application is written in.
 
     This value defaults to `perl`, and can also be automatically sourced from the `NEWRELIC_APP_LANGUAGE` environment variable.
 
-- - `app_language_version`
+- `app_language_version`
 
     The version of the language that your application is written in.
 
