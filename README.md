@@ -21,9 +21,10 @@ Perl Agent for NewRelic APM
 
 This module provides bindings for the [NewRelic](https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk) Agent SDK.
 
-It is a drop in replacement for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) that is implemented using [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus) instead of XS and C++.
+It is a drop in replacement for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) that is implemented using [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus) instead of XS and C++.  If you are writing
+new code, then I highly recommend the procedural interface instead: [NewRelic::Agent::FFI::Procedural](https://metacpan.org/pod/NewRelic::Agent::FFI::Procedural).
 
-Why use this module instead of the other one?
+Why use [NewRelic::Agent::FFI](https://metacpan.org/pod/NewRelic::Agent::FFI) module instead of [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent)?
 
 - Powerful [Alien](https://metacpan.org/pod/Alien) technology
 
@@ -135,11 +136,17 @@ Sets the maximum trace section for the transaction.
 
 ## set\_transaction\_category
 
+    my $status = $agent->set_transaction_category($tx, $category);
+
+Sets the transaction category.
+
+## set\_transaction\_type\_web
+
     my $status = $agent->set_transaction_type_web($tx);
 
 Sets the transaction type to 'web'
 
-## set\_transaction\_type\_web
+## set\_transaction\_type\_other
 
     my $status = $agent->set_transaction_type_other($tx);
 

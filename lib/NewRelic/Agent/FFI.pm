@@ -29,9 +29,10 @@ use NewRelic::Agent::FFI::Procedural;
 
 This module provides bindings for the L<NewRelic|https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk> Agent SDK.
 
-It is a drop in replacement for L<NewRelic::Agent> that is implemented using L<FFI::Platypus> instead of XS and C++.
+It is a drop in replacement for L<NewRelic::Agent> that is implemented using L<FFI::Platypus> instead of XS and C++.  If you are writing
+new code, then I highly recommend the procedural interface instead: L<NewRelic::Agent::FFI::Procedural>.
 
-Why use this module instead of the other one?
+Why use L<NewRelic::Agent::FFI> module instead of L<NewRelic::Agent>?
 
 =over 4
 
@@ -205,21 +206,6 @@ sub begin_transaction
   NewRelic::Agent::FFI::Procedural::newrelic_transaction_begin();
 }
 
-sub _set1
-{
-  $_[0]->($_[2]);
-}
-
-sub _set2
-{
-  $_[0]->(@_[2,3]);
-}
-
-sub _set3
-{
-  $_[0]->(@_[2,3,4]);
-}
-
 =head2 set_transaction_name
 
  my $status = $agent->set_transaction_name($tx, $name);
@@ -240,11 +226,17 @@ Sets the maximum trace section for the transaction.
 
 =head2 set_transaction_category
 
+ my $status = $agent->set_transaction_category($tx, $category);
+
+Sets the transaction category.
+
+=head2 set_transaction_type_web
+
  my $status = $agent->set_transaction_type_web($tx);
 
 Sets the transaction type to 'web'
 
-=head2 set_transaction_type_web
+=head2 set_transaction_type_other
 
  my $status = $agent->set_transaction_type_other($tx);
 
@@ -256,16 +248,6 @@ Sets the transaction type to 'other'
 
 Adds the given attribute (key/value pair) for the transaction.
 
-=cut
-
-$ffi->attach( [ newrelic_transaction_set_name               => 'set_transaction_name'               ] => [ 'long', 'string' ] => 'int' => \&_set2 );
-$ffi->attach( [ newrelic_transaction_set_request_url        => 'set_transaction_request_url'        ] => [ 'long', 'string' ] => 'int' => \&_set2 );
-$ffi->attach( [ newrelic_transaction_set_max_trace_segments => 'set_transaction_max_trace_segments' ] => [ 'long', 'int'    ] => 'int' => \&_set2 );
-$ffi->attach( [ newrelic_transaction_set_category           => 'set_transaction_category'           ] => [ 'long', 'string' ] => 'int' => \&_set2 );
-$ffi->attach( [ newrelic_transaction_set_type_web   => 'set_transaction_type_web'   ] => [ 'long' ] => 'int' => \&_set1 );
-$ffi->attach( [ newrelic_transaction_set_type_other => 'set_transaction_type_other' ] => [ 'long' ] => 'int' => \&_set1 );
-$ffi->attach( [ newrelic_transaction_add_attribute => 'add_transaction_attribute' ] => [ 'long', 'string', 'string' ] => 'int' => \&_set3);
-
 =head2 notice_transaction_error
 
  my $status = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
@@ -275,11 +257,53 @@ error is sent with each transaction.
 
 =cut
 
-$ffi->attach( [ newrelic_transaction_notice_error => 'notice_transaction_error' ] => [ 'long', 'string', 'string', 'string', 'string' ] => 'int' => sub {
-  my $xsub = shift;
-  my $self = shift;
-  $xsub->(@_);
-});
+sub set_transaction_name
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_name;
+}
+
+sub set_transaction_request_url
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_request_url;
+}
+
+sub set_transaction_max_trace_segments
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_max_trace_segments;
+}
+
+sub set_transaction_category
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_category;
+}
+
+sub set_transaction_type_web
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_type_web;
+}
+
+sub set_transaction_type_other
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_set_type_other;
+}
+
+sub add_transaction_attribute
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_add_attribute;
+}
+
+sub notice_transaction_error
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_notice_error;
+}
 
 =head2 end_transaction
 
@@ -305,10 +329,29 @@ Records the memory usage. C<$memory_megabytes> is a floating point value.
 
 =cut
 
-$ffi->attach( [ newrelic_transaction_end => 'end_transaction' ] => [ 'long' ] => 'int' => \&_set1 );
-$ffi->attach( [ newrelic_record_metric => 'record_metric' ] => [ 'string', 'double'] => 'int' => \&_set2 );
-$ffi->attach( [ newrelic_record_cpu_usage => 'record_cpu_usage' ] => [ 'double', 'double' ] => 'int' => \&_set2);
-$ffi->attach( [ newrelic_record_memory_usage => 'record_memory_usage' ] => [ 'double' ] => 'int' => \&_set1);
+sub end_transaction
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_transaction_end;
+}
+
+sub record_metric
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_record_metric;
+}
+
+sub record_cpu_usage
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_record_cpu_usage;
+}
+
+sub record_memory_usage
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_record_memory_usage;
+}
 
 =head2 begin_generic_segment
 
@@ -318,11 +361,11 @@ Begins a new generic segment.  C<$parent_seg> is a parent segment id (C<undef> n
 
 =cut
 
-$ffi->attach( [ newrelic_segment_generic_begin => 'begin_generic_segment' ] => [ 'long', 'long', 'string' ] => 'long' => sub {
-  my $xsub = shift;
-  my $self = shift;
-  $xsub->(@_);
-});
+sub begin_generic_segment
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_segment_generic_begin;
+}
 
 =head2 begin_datastore_segment
 
@@ -344,11 +387,11 @@ Begins a new external segment.  C<$parent_seg> is a parent segment id (C<undef> 
 
 =cut
 
-$ffi->attach( [ newrelic_segment_external_begin => 'begin_external_segment' ] => [ 'long', 'long', 'string', 'string' ] => 'long' => sub {
-  my $xsub = shift;
-  my $self = shift;
-  $xsub->(@_);
-});
+sub begin_external_segment
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_segment_external_begin;
+}
 
 =head2 end_segment
 
@@ -358,7 +401,11 @@ End the given segment.
 
 =cut
 
-$ffi->attach( [ newrelic_segment_end => 'end_segment' ] => [ 'long', 'long' ] => 'int' => \&_set2);
+sub end_segment
+{
+  shift @_;
+  goto &NewRelic::Agent::FFI::Procedural::newrelic_segment_end;
+}
 
 =head2 get_license_key
 

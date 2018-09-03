@@ -1,2 +1,3 @@
 /NewRelic-Agent-FFI-*
 /.build
+*.swp
