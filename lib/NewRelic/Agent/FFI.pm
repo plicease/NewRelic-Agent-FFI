@@ -5,7 +5,7 @@ use warnings;
 use 5.008001;
 use FFI::Platypus 0.56;
 use FFI::CheckLib ();
-use NewRelic::Agent::FFI::Procedural;
+use NewRelic::Agent::FFI::Procedural ();
 
 # ABSTRACT: Perl Agent for NewRelic APM
 # VERSION
@@ -143,9 +143,6 @@ sub new
     app_language_version => $app_language_version,
   }, $class;
 }
-
-my $ffi = $NewRelic::Agent::FFI::Procedural::ffi;
-my $newrelic_basic_literal_replacement_obfuscator = $ffi->find_symbol('newrelic_basic_literal_replacement_obfuscator');
 
 =head1 METHODS
 
@@ -369,9 +366,12 @@ Begins a new datastore segment.  C<$parent_seg> is a parent segment id (C<undef>
 
 =cut
 
-$ffi->attach( [ newrelic_segment_datastore_begin => 'begin_datastore_segment' ] => [ 'long', 'long', 'string', 'string', 'string', 'string', 'opaque' ] => 'long' => sub {
-  $_[0]->(@_[2,3,4,5,6,7], $newrelic_basic_literal_replacement_obfuscator);
-});
+sub begin_datastore_segment
+{
+  NewRelic::Agent::FFI::Procedural::newrelic_segment_datastore_begin(
+    @_[1,2,3,4,5,6], NewRelic::Agent::FFI::Procedural::newrelic_basic_literal_replacement_obfuscator(),
+  )
+}
 
 =head2 begin_external_segment
 

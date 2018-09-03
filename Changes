@@ -3,6 +3,8 @@ Revision history for {{$dist->name}}
 {{$NEXT}}
   - Added newrelic_register_message_handler and newrelic_message_handler to 
     NewRelic::Agent::FFI::Procedural
+  - Added newrelic_basic_literal_replacement_obfuscator to
+    NewRelic::Agent::FFI::Procedural
 
 0.03      2018-09-03 16:38:54 -0400
   - Only use Alien::nragent as fallback if the libs aren't already installed

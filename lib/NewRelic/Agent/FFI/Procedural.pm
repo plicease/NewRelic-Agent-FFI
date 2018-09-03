@@ -290,6 +290,24 @@ This needs to be called BEFORE you call C<newrelic_init>.
 $ffi->attach( newrelic_register_message_handler => ['opaque'] => 'void' );
 use constant newrelic_message_handler => $ffi->find_symbol('newrelic_message_handler');
 
+=head2 newrelic_basic_literal_replacement_obfuscator
+
+ my $address = newrelic_basic_literal_replacement_obfuscator;
+
+Returns the address of the C function that does the basic/default obfuscator contained within the
+NewRelic agent library.  Normally you wouldn't call this from Perl, so it is the address of the
+function, not the function itself.  You can, however, call it via L<FFI::Platypus>:
+
+ use FFI::Platypus;
+ 
+ my $ffi = FFI::Platypus->new;
+ $new->attach( newrelic_basic_literal_replacement_obfuscator, ['string'] => 'string');
+ my $save = newrelic_basic_literal_replacement_obfuscator("SELECT * FROM user WHERE password = 'secret'");
+
+=cut
+
+use constant newrelic_basic_literal_replacement_obfuscator => $ffi->find_symbol('newrelic_basic_literal_replacement_obfuscator');
+
 our @EXPORT = grep /^newrelic_/, keys %NewRelic::Agent::FFI::Procedural::;
 
 # TODO: example for using newrelic_segment_datastore_begin with non default obfuscator
