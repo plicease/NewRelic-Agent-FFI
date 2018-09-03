@@ -3,8 +3,8 @@ package NewRelic::Agent::SDK;
 use strict;
 use warnings;
 use 5.008001;
-use FFI::Platypus;
-use Alien::nragent;
+use FFI::Platypus 0.56;
+use FFI::CheckLib;
 use base qw( Exporter );
 
 our @EXPORT = qw(
@@ -17,7 +17,16 @@ our @EXPORT = qw(
 # VERSION
 
 my $ffi = FFI::Platypus->new;
-$ffi->lib(Alien::nragent->dynamic_libs);
+$ffi->lib(sub {
+  my @find_lib_args = (
+    lib => [ qw(newrelic-collector-client newrelic-common newrelic-transaction) ]
+  );
+  push @find_lib_args, libpath => ['/opt/newrelic/lib/'] if -d '/opt/newrelic/lib/';
+  my @system = FFI::CheckLib::find_lib(@find_lib_args);
+  return @system if @system;
+  require Alien::nragent;
+  Alien::nragent->dynamic_libs;
+});
 
 =head1 FUNCTIONS
 

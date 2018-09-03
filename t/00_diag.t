@@ -12,6 +12,7 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Alien::nragent
   ExtUtils::MakeMaker
+  FFI::CheckLib
   FFI::Platypus
   Test2::V0
 );
