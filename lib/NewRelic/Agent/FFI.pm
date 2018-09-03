@@ -438,5 +438,17 @@ sub get_app_name { shift->{app_name} }
 sub get_app_language { shift->{app_language} }
 sub get_app_language_version { shift->{app_language_version} }
 
+=head1 SEE ALSO
+
+=over 4
+
+=item L<NewRelic::Agent::FFI::Procedural>
+
+Procedural interface, recommended over this one.
+
+=back
+
+=cut
+
 1;
 

@@ -235,6 +235,12 @@ Get the language name (usually `perl`).
 
 Get the language version.
 
+# SEE ALSO
+
+- [NewRelic::Agent::FFI::Procedural](https://metacpan.org/pod/NewRelic::Agent::FFI::Procedural)
+
+    Procedural interface, recommended over this one.
+
 # AUTHOR
 
 Graham Ollis <plicease@cpan.org>
