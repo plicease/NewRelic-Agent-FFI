@@ -6,18 +6,8 @@ subtest 'export' => sub {
   imported_ok 'newrelic_init';
   
   note "also imported: $_" for @NewRelic::Agent::FFI::Procedural::EXPORT;
-
-};
-
-subtest 'newrelic_register_message_handler' => sub {
-
-  skip_all 'TODO';
-
-};
-
-subtest 'init' => sub {
-
-  skip_all 'TODO';
+  
+  ok(newrelic_message_handler, "address of newrelic_message_handler: @{[ newrelic_message_handler ]}");
 
 };
 

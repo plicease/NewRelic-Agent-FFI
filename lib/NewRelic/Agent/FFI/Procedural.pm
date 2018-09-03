@@ -46,29 +46,34 @@ object oriented interface.
 
 =item Functions aren't renamed
 
-The object oriented version renames a number of its methods, meaning you have to look at the source code to understand what parts of the
-SDK you are I<actually> calling.  With this interface you can lookup the SDK functions in its documentation directly.
+The object oriented version renames a number of its methods, so translating C/C++ example code is nearly impossible.
+The procedural version uses the same function name and constants, so translating example code from other languages
+is easy.
 
 =back
 
 =cut
 
-our $ffi = FFI::Platypus->new;
-$ffi->lib(sub {
-  my @find_lib_args = (
-    lib => [ qw(newrelic-collector-client newrelic-common newrelic-transaction) ]
-  );
-  push @find_lib_args, libpath => ['/opt/newrelic/lib/'] if -d '/opt/newrelic/lib/';
-  my @system = find_lib(@find_lib_args);
-  if(@system)
-  {
-    my($common) = grep /newrelic-common/, @system;
-    my $handle = dlopen($common, RTLD_NOW | RTLD_GLOBAL ) || die "error dlopen $common @{[ dlerror ]}";
-    return @system;
-  }
-  require Alien::nragent;
-  Alien::nragent->dynamic_libs;
-});
+our $ffi;
+
+BEGIN {
+  $ffi = FFI::Platypus->new;
+  $ffi->lib(sub {
+    my @find_lib_args = (
+      lib => [ qw(newrelic-collector-client newrelic-common newrelic-transaction) ]
+    );
+    push @find_lib_args, libpath => ['/opt/newrelic/lib/'] if -d '/opt/newrelic/lib/';
+    my @system = find_lib(@find_lib_args);
+    if(@system)
+    {
+      my($common) = grep /newrelic-common/, @system;
+      my $handle = dlopen($common, RTLD_NOW | RTLD_GLOBAL ) || die "error dlopen $common @{[ dlerror ]}";
+      return @system;
+    }
+    require Alien::nragent;
+    Alien::nragent->dynamic_libs;
+  });
+}
 
 =head1 FUNCTIONS
 
@@ -257,9 +262,36 @@ End the given segment.
 $ffi->attach( newrelic_segment_external_begin => [ 'long', 'long', 'string', 'string' ] => 'long' );
 $ffi->attach( newrelic_segment_end            => [ 'long', 'long' ] => 'int' );
 
+=head2 newrelic_register_message_handler
+
+ newrelic_register_message_handler $handler;
+
+Register the message handler used to send messages to NewRelic.  The only useful way at the moment to use
+this function is by giving it C<newrelic_message_handler>, which sends messages directly to NewRelic,
+rather than through a separate daemon process:
+
+ newrelic_register_message_handler newrelic_message_handler;
+
+This needs to be called BEFORE you call C<newrelic_init>.
+
+=head2 newrelic_message_handler
+
+ my $address = newrelic_message_handler;
+
+Returns the address of the C function that handles sending messages directly to NewRelic.  This cannot
+be called directly from Perl, but can be passed to C<newrelic_register_message_handler> like so:
+
+ newrelic_register_message_handler newrelic_message_handler;
+
+This needs to be called BEFORE you call C<newrelic_init>.
+
+=cut
+
+$ffi->attach( newrelic_register_message_handler => ['opaque'] => 'void' );
+use constant newrelic_message_handler => $ffi->find_symbol('newrelic_message_handler');
+
 our @EXPORT = grep /^newrelic_/, keys %NewRelic::Agent::FFI::Procedural::;
 
-# TODO: embeded mode interface
 # TODO: example for using newrelic_segment_datastore_begin with non default obfuscator
 
 1;

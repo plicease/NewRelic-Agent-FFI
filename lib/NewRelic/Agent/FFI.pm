@@ -161,16 +161,9 @@ Embeds the collector agent for harvesting NewRelic data. This should be called b
 
 sub embed_collector
 {
-  my($self) = @_;
-  my $newrelic_message_handler = $ffi->find_symbol('newrelic_message_handler');
-  if($newrelic_message_handler)
-  {
-    $ffi->function('newrelic_register_message_handler' => ['opaque'] => 'void')->call($newrelic_message_handler);
-  }
-  else
-  {
-    Carp::croak("unable to find newrelic_message_handler");
-  }
+  NewRelic::Agent::FFI::Procedural::newrelic_register_message_handler(
+    NewRelic::Agent::FFI::Procedural::newrelic_message_handler
+  );
 }
 
 =head2 init
@@ -181,15 +174,16 @@ Initialize the connection to NewRelic.
 
 =cut
 
-$ffi->attach( [ newrelic_init => 'init' ] => [ 'string', 'string', 'string', 'string' ] => 'int' => sub {
-  my($xsub, $self) = @_;
-  $xsub->(
+sub init
+{
+  my($self) = @_;
+  NewRelic::Agent::FFI::Procedural::newrelic_init(
     $self->get_license_key,
     $self->get_app_name,
     $self->get_app_language,
     $self->get_app_language_version,
   );
-});
+}
 
 =head2 begin_transaction
 
