@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.03      2018-09-03 16:38:54 -0400
   - Only use Alien::nragent as fallback if the libs aren't already installed
+  - Added NewRelic::Agent::FFI::Procedural
 
 0.02      2018-08-23 11:40:34 -0400
   - Added tests and fixed a number of bugs that they uncovered
