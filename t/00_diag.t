@@ -14,6 +14,7 @@ $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
   FFI::CheckLib
   FFI::Platypus
+  FFI::Platypus::DL
   Test2::V0
 );
 

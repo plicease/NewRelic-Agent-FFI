@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use 5.008001;
 use FFI::Platypus 0.56;
-use Alien::nragent;
 use FFI::CheckLib ();
+use NewRelic::Agent::FFI::Procedural;
 
 # ABSTRACT: Perl Agent for NewRelic APM
 # VERSION
@@ -143,17 +143,7 @@ sub new
   }, $class;
 }
 
-my $ffi = FFI::Platypus->new;
-$ffi->lib(sub {
-  my @find_lib_args = (
-    lib => [ qw(newrelic-collector-client newrelic-common newrelic-transaction) ]
-  );
-  push @find_lib_args, libpath => ['/opt/newrelic/lib/'] if -d '/opt/newrelic/lib/';
-  my @system = FFI::CheckLib::find_lib(@find_lib_args);
-  return @system if @system;
-  require Alien::nragent;
-  Alien::nragent->dynamic_libs;
-});
+my $ffi = $NewRelic::Agent::FFI::Procedural::ffi;
 my $newrelic_basic_literal_replacement_obfuscator = $ffi->find_symbol('newrelic_basic_literal_replacement_obfuscator');
 
 =head1 METHODS
@@ -210,9 +200,10 @@ Returns the transaction's ID on success, else negative warning code or error cod
 
 =cut
 
-$ffi->attach( [ newrelic_transaction_begin => 'begin_transaction' ] => [] => 'long' => sub {
-  shift->();
-});
+sub begin_transaction
+{
+  NewRelic::Agent::FFI::Procedural::newrelic_transaction_begin();
+}
 
 sub _set1
 {
