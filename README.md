@@ -235,12 +235,6 @@ Get the language name (usually `perl`).
 
 Get the language version.
 
-## CAVEATS
-
-This module attempts to replicate the same interface as [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent), and this module includes a superset of the same tests.  
-Unfortunately, the existing test suite for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) is completely insufficient to have a high degree of confidence that
-either module works.
-
 # AUTHOR
 
 Graham Ollis <plicease@cpan.org>

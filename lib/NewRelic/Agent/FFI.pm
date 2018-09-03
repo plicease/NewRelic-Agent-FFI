@@ -440,10 +440,3 @@ sub get_app_language_version { shift->{app_language_version} }
 
 1;
 
-=head2 CAVEATS
-
-This module attempts to replicate the same interface as L<NewRelic::Agent>, and this module includes a superset of the same tests.  
-Unfortunately, the existing test suite for L<NewRelic::Agent> is completely insufficient to have a high degree of confidence that
-either module works.
-
-=cut
