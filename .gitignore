@@ -1,3 +1,4 @@
 /NewRelic-Agent-FFI-*
 /.build
 *.swp
+/log4cplus.properties

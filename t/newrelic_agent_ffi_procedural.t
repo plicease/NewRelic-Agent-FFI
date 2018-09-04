@@ -2,12 +2,21 @@ use Test2::V0 -no_srand => 1;
 use NewRelic::Agent::FFI::Procedural;
 use FFI::Platypus;
 
+my $license_key = $ENV{NEWRELIC_AGENT_FFI_TEST};
+
 subtest 'export' => sub {
 
   imported_ok 'newrelic_init';
   
   note "also imported: $_" for @NewRelic::Agent::FFI::Procedural::EXPORT;
   
+  ok(newrelic_message_handler, "address of newrelic_message_handler: @{[ newrelic_message_handler ]}");
+
+};
+
+subtest embeded => sub {
+
+  skip_all 'test requires license key' unless $license_key;  
   ok(newrelic_message_handler, "address of newrelic_message_handler: @{[ newrelic_message_handler ]}");
 
 };
