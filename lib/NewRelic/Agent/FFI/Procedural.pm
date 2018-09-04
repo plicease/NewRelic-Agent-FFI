@@ -2,9 +2,9 @@ package NewRelic::Agent::FFI::Procedural;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.010;
 use FFI::Platypus 0.56;
-use FFI::Platypus::Memory qw( strdup );
+use FFI::Platypus::Memory qw( strdup free );
 use FFI::Platypus::DL qw( dlopen dlerror RTLD_NOW RTLD_GLOBAL );
 use FFI::CheckLib qw( find_lib );
 use base qw( Exporter );
@@ -178,7 +178,20 @@ $ffi->attach( newrelic_init => [ 'opaque', 'opaque', 'opaque', 'opaque' ] => 'in
   $app_language         ||= $ENV{NEWRELIC_APP_LANGUAGE}         || 'perl';
   $app_language_version ||= $ENV{NEWRELIC_APP_LANGUAGE_VERSION} || $];
 
-  $xsub->(strdup($license_key), strdup($app_name), strdup($app_language), strdup($app_language_version));
+  my @new = (strdup($license_key), strdup($app_name), strdup($app_language), strdup($app_language_version));
+
+  my $ret = $xsub->(@new);
+
+  # cannot find documentation to confirm, but NR doesn't appear to copy these strings,
+  # so we copy them.  But we want to free the old strings if we re-init.
+  state $olds = [];
+  foreach my $old (@$olds)
+  {
+    free($old);
+  }
+  $olds = \@new;
+  
+  $ret;
 });
 
 =head2 newrelic_transaction_begin

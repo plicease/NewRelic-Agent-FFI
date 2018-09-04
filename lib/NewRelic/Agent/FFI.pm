@@ -2,7 +2,7 @@ package NewRelic::Agent::FFI;
 
 use strict;
 use warnings;
-use 5.008001;
+use 5.010;
 use FFI::Platypus 0.56;
 use FFI::CheckLib ();
 use NewRelic::Agent::FFI::Procedural ();

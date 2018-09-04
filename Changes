@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Fixed bug in newrelic_init
+  - Dropped support for Perl 5.8.
 
 0.06      2018-09-04 17:34:39 -0400
   - Fix intermittent test fail
