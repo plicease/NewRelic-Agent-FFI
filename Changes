@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.06      2018-09-04 17:34:39 -0400
+  - Fix intermittent test fail
+
 0.05      2018-09-04 06:15:29 -0400
   - Fix configure prereqs
   - Documentation fixes
