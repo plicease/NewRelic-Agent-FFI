@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use 5.008001;
 use FFI::Platypus 0.56;
+use FFI::Platypus::Memory qw( strdup );
 use FFI::Platypus::DL qw( dlopen dlerror RTLD_NOW RTLD_GLOBAL );
 use FFI::CheckLib qw( find_lib );
 use base qw( Exporter );
@@ -169,7 +170,7 @@ This value defaults to your perl version, and can also be automatically sourced 
 
 =cut
 
-$ffi->attach( newrelic_init => [ 'string', 'string', 'string', 'string' ] => 'int' => sub {
+$ffi->attach( newrelic_init => [ 'opaque', 'opaque', 'opaque', 'opaque' ] => 'int' => sub {
   my($xsub, $license_key, $app_name, $app_language, $app_language_version) = @_;
 
   $license_key          ||= $ENV{NEWRELIC_LICENSE_KEY}          || '';
@@ -177,7 +178,7 @@ $ffi->attach( newrelic_init => [ 'string', 'string', 'string', 'string' ] => 'in
   $app_language         ||= $ENV{NEWRELIC_APP_LANGUAGE}         || 'perl';
   $app_language_version ||= $ENV{NEWRELIC_APP_LANGUAGE_VERSION} || $];
 
-  $xsub->($license_key, $app_name, $app_language, $app_language_version);
+  $xsub->(strdup($license_key), strdup($app_name), strdup($app_language), strdup($app_language_version));
 });
 
 =head2 newrelic_transaction_begin
