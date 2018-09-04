@@ -117,7 +117,7 @@ This value defaults to your perl version, and can also be automatically sourced 
 sub new
 {
   my($class, %args) = @_;
-  
+
   my $license_key          = delete $args{license_key}
                           || $ENV{NEWRELIC_LICENSE_KEY}
                           || '';
@@ -134,8 +134,8 @@ sub new
   if (%args) {
     require Carp;
     Carp::croak("Invalid arguments: @{[ keys %args ]}");
-  }  
-  
+  }
+
   bless {
     license_key          => $license_key,
     app_name             => $app_name,

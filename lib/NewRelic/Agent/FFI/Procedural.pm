@@ -171,12 +171,12 @@ This value defaults to your perl version, and can also be automatically sourced 
 
 $ffi->attach( newrelic_init => [ 'string', 'string', 'string', 'string' ] => 'int' => sub {
   my($xsub, $license_key, $app_name, $app_language, $app_language_version) = @_;
-  
+
   $license_key          ||= $ENV{NEWRELIC_LICENSE_KEY}          || '';
   $app_name             ||= $ENV{NEWRELIC_APP_NAME}             || 'AppName';
   $app_language         ||= $ENV{NEWRELIC_APP_LANGUAGE}         || 'perl';
   $app_language_version ||= $ENV{NEWRELIC_APP_LANGUAGE_VERSION} || $];
-  
+
   $xsub->($license_key, $app_name, $app_language, $app_language_version);
 });
 
@@ -302,7 +302,7 @@ one of C<select>, C<insert>, C<update> or C<delete>.
 # do much, as that appears to be the default.  For the Procedural version we pass in NULL by default, but you
 # can override with another symbol if you want.  Needs to be a C symbol though, not a Perl code ref.
 $ffi->attach( newrelic_segment_datastore_begin => [ 'long', 'long', 'string', 'string', 'string', 'string', 'opaque' ] => 'long' );
-         
+
 =head2 newrelic_segment_external_begin
 
  my $seg = newrelic_segment_external_begin $tx, $parent_seg, $host, $name;
