@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.008001;
 use FFI::Platypus 0.56;
-use FFI::Platypus::DL;
+use FFI::Platypus::DL qw( dlopen dlerror RTLD_NOW RTLD_GLOBAL );
 use FFI::CheckLib qw( find_lib );
 use base qw( Exporter );
 use constant NEWRELIC_RETURN_CODE_OK                      => 0;
@@ -25,11 +25,16 @@ use constant NEWRELIC_AUTOSCOPE    => 1;
 
  use NewRelic::Agent::FFI::Procedural;
  
+ # enable embedded mode:
+ newrelic_register_message_handler newrelic_message_handler;
+ 
+ # initalize:
  newrelic_init
    'abc123'     # license key
    'REST API'   # app name
  ;
  
+ # use it:
  my $tx = newrelic_transaction_begin;
  ...
  my $status = newrelic_transaction_end $tx;
@@ -68,7 +73,7 @@ This interface is more complete than the object oriented version.
 
 =cut
 
-our $ffi;
+my $ffi;
 
 BEGIN {
   $ffi = FFI::Platypus->new;
