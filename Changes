@@ -1,7 +1,10 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.05      2018-09-04 06:15:29 -0400
   - Fix configure prereqs
+  - Documentation fixes
 
 0.04      2018-09-03 23:09:37 -0400
   - Added these functions to the procedural interface:
