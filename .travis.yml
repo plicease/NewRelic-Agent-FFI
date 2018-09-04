@@ -8,6 +8,7 @@ install:
   - dzil authordeps --missing | cpanm -n
   - dzil listdeps   --missing | cpanm -n
   - dzil run cpanm --installdeps -n .
+  - ln -s maint/log4cplus.properties
 
 perl:
   - "5.14"
