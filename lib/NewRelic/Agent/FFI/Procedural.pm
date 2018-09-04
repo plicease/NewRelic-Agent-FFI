@@ -283,9 +283,10 @@ $ffi->attach( newrelic_record_cpu_usage                   => [ 'double', 'double
 $ffi->attach( newrelic_record_memory_usage                => [ 'double' ]                                       => 'int'  );
 $ffi->attach( newrelic_segment_generic_begin              => [ 'long', 'long', 'string' ]                       => 'long' );
 
-=head2 begin_datastore_segment
+=head2 newrelic_segment_datastore_begin
 
- my $seg = $agent->begin_datastore_segment($tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name);
+ my $seg = newrelic_segment_datastore_begin $tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name;
+ my $seg = newrelic_segment_datastore_begin $tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name, $sql_obfuscator;
 
 Begins a new datastore segment.  C<$parent_seg> is a parent segment id (C<undef> no parent).  C<$operation> should be
 one of C<select>, C<insert>, C<update> or C<delete>.
