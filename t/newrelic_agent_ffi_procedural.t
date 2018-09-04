@@ -23,9 +23,20 @@ subtest 'newrelic_basic_literal_replacement_obfuscator' => sub {
 
 };
 
-subtest 'newrelic_segment_datastore_begin' => sub {
+subtest 'init' => sub {
 
-  skip_all 'TODO';
+  newrelic_init;
+  
+  pass "didn't crash";
+
+};
+
+subtest 'newrelic_request_shutdown' => sub {
+
+  my $status = newrelic_request_shutdown 'Because I said so';
+  
+  is $status, 0;
+  note "status = $status";
 
 };
 

@@ -7,6 +7,16 @@ use FFI::Platypus 0.56;
 use FFI::Platypus::DL;
 use FFI::CheckLib qw( find_lib );
 use base qw( Exporter );
+use constant NEWRELIC_RETURN_CODE_OK                      => 0;
+use constant NEWRELIC_RETURN_CODE_OTHER                   => -0x10001;
+use constant NEWRELIC_RETURN_CODE_DISABLED                => -0x20001;
+use constant NEWRELIC_RETURN_CODE_INVALID_PARAM           => -0x30001;
+use constant NEWRELIC_RETURN_CODE_INVALID_ID              => -0x30002;
+use constant NEWRELIC_RETURN_CODE_TRANSACTION_NOT_STARTED => -0x40001;
+use constant NEWRELIC_RETURN_CODE_TRANSACTION_IN_PROGRESS => -0x40002;
+use constant NEWRELIC_RETURN_CODE_TRANSACTION_NOT_NAMED   => -0x40003;
+use constant NEWRELIC_ROOT_SEGMENT => 0;
+use constant NEWRELIC_AUTOSCOPE    => 1;
 
 # ABSTRACT: Procedural interface for NewRelic APM
 # VERSION
@@ -20,9 +30,9 @@ use base qw( Exporter );
    'REST API'   # app name
  ;
  
- my $tx_id = newrelic_transaction_begin;
+ my $tx = newrelic_transaction_begin;
  ...
- my $err_id = newrelic_transaction_end $tx;
+ my $status = newrelic_transaction_end $tx;
 
 =head1 DESCRIPTION
 
@@ -50,6 +60,10 @@ The object oriented version renames a number of its methods, so translating C/C+
 The procedural version uses the same function name and constants, so translating example code from other languages
 is easy.
 
+=item API is complete
+
+This interface is more complete than the object oriented version.
+
 =back
 
 =cut
@@ -76,6 +90,43 @@ BEGIN {
 }
 
 =head1 FUNCTIONS
+
+All functions are exported by default.  You can explicitly specify just the functions that you want in the
+usual L<Exporter> way if you prefer.
+
+Functions that return a C<$status> will return one of these codes (NEWRELIC_RETURN_CODE_OK is 0, the others
+are negative values):
+
+=over 4
+
+=item NEWRELIC_RETURN_CODE_OK
+
+=item NEWRELIC_RETURN_CODE_OTHER
+
+=item NEWRELIC_RETURN_CODE_DISABLED
+
+=item NEWRELIC_RETURN_CODE_INVALID_PARAM
+
+=item NEWRELIC_RETURN_CODE_INVALID_ID
+
+=item NEWRELIC_RETURN_CODE_TRANSACTION_NOT_STARTED
+
+=item NEWRELIC_RETURN_CODE_TRANSACTION_IN_PROGRESS
+
+=item NEWRELIC_RETURN_CODE_TRANSACTION_NOT_NAMED
+
+=back
+
+Functions that return a C<$tx> will return a transaction id on success, and a (negative) C<$status> code on failure.
+
+Functions that return a C<$seg> will return a segment id on success, and a (negative) C<$status> code on failure.
+
+Functions that return a C<$address> are the address to a C function that can be passed to other C<newrelic_> functions as appropriate.
+
+For functions that take a C<$parent_seg> argument, you can pass in NEWRELIC_AUTOSCOPE or NEWRELIC_ROOT_SEGMENT instead of
+a literal segment id.
+
+For functions that take a C<$tx> argument, you can pass in NEWRELIC_AUTOSCOPE instead of a literal transaction id.
 
 =head2 newrelic_init
 
@@ -236,7 +287,8 @@ $ffi->attach( newrelic_segment_generic_begin              => [ 'long', 'long', '
 
  my $seg = $agent->begin_datastore_segment($tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name);
 
-Begins a new datastore segment.  C<$parent_seg> is a parent segment id (C<undef> no parent).
+Begins a new datastore segment.  C<$parent_seg> is a parent segment id (C<undef> no parent).  C<$operation> should be
+one of C<select>, C<insert>, C<update> or C<delete>.
 
 =cut
 
@@ -308,7 +360,29 @@ function, not the function itself.  You can, however, call it via L<FFI::Platypu
 
 use constant newrelic_basic_literal_replacement_obfuscator => $ffi->find_symbol('newrelic_basic_literal_replacement_obfuscator');
 
-our @EXPORT = grep /^newrelic_/, keys %NewRelic::Agent::FFI::Procedural::;
+=head2 newrelic_request_shutdown
+
+ my $status = newrelic_request_shutdown $reason;
+
+Tell the Collector Client to shutdown and stop reporting application performance data to New Relic.
+
+=cut
+
+$ffi->attach( newrelic_request_shutdown => ['string'] => 'int' );
+
+=head2 newrelic_enable_instrumentation
+
+ newrelic_enable_instrumentation $set_enabled;
+
+Disable/enable instrumentation. By default, instrumentation is enabled.
+
+C<$set_enabled>  0 to disable, 1 to enable
+
+=cut
+
+$ffi->attach( newrelic_enable_instrumentation => ['int'] => 'void' );
+
+our @EXPORT = sort grep /^newrelic_/i, keys %NewRelic::Agent::FFI::Procedural::;
 
 # TODO: example for using newrelic_segment_datastore_begin with non default obfuscator
 
