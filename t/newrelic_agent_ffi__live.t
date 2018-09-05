@@ -21,7 +21,7 @@ my $end_transaction_code = $license_key ? 0 : -65537;
 subtest 'setup' => sub {
 
   $nr = NewRelic::Agent::FFI->new(
-    license_key => $license_key || 'xxxx',
+    license_key => $license_key,
     app_name    => "NRAFFI (Test)",
   );
   isa_ok $nr, 'NewRelic::Agent::FFI';

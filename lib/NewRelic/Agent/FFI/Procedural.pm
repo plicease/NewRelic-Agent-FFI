@@ -275,12 +275,6 @@ Records the CPU usage. C<$cpu_user_time_seconds> and C<$cpu_usage_percent> are f
 
 Records the memory usage. C<$memory_megabytes> is a floating point value.
 
-=head2 newrelic_segment_datastore_begin
-
- my $seg = newrelic_segment_datastore_begin $tx, $parent_seg, $name;
-
-Begins a new generic segment.  C<$parent_seg> is a parent segment id (C<undef> no parent).  C<$name> is a string.
-
 =head2 newrelic_segment_generic_begin
 
  my $seg = newrelic_segment_generic_begin $tx, $parent_seg, $name;
@@ -311,6 +305,36 @@ $ffi->attach( newrelic_segment_generic_begin              => [ 'long', 'long', '
 
 Begins a new datastore segment.  C<$parent_seg> is a parent segment id (C<undef> no parent).  C<$operation> should be
 one of C<select>, C<insert>, C<update> or C<delete>.
+
+If you want to provide your own obfuscator, you need to pass in the address of a C function.  To do that from Perl you can
+create a closure with L<FFI::Platypus>, like so:
+
+ use 5.010;
+ use FFI::Platypus;
+ use FFI::Platypus::Memory qw( strdup free );
+ 
+ sub myobfuscator
+ {
+   # input SQL
+   my($sql) = @_;
+   
+   # make some kind of transformation
+   $sql =~ tr/a-z/z-a/;
+   
+   # because C has a different ownership model than Perl for functions
+   # that return a string, you need to create a C pointer to a copy of
+   # the return value.  On the next call we will free the previous copy.
+   state $ptr = 0;
+   free($ptr) if $ptr;
+   return $ptr = strdup($sql);
+ }
+ 
+ $ffi->type('(string)->opaque' => 'obfuscator_t');
+ my $myobfuscator_closure = $ffi->closure(\&myobfuscator);
+ my $myobfuscator_ptr     = $ffi->cast('obfuscator_t' => 'opsque', $myobfuscator_closure);
+ 
+ newrelic_segment_datastore_begin $tx, $seg, $table, $sql, $rollup, $myobfuscator_ptr;
+ ...
 
 =cut
 
