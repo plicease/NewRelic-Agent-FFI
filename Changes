@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.07      2018-09-05 06:22:37 -0400
   - Fixed bug in newrelic_init
   - Dropped support for Perl 5.8.
   - Example code for using your own SQL obfuscator
