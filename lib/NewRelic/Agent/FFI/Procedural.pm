@@ -18,6 +18,10 @@ use constant NEWRELIC_RETURN_CODE_TRANSACTION_IN_PROGRESS => -0x40002;
 use constant NEWRELIC_RETURN_CODE_TRANSACTION_NOT_NAMED   => -0x40003;
 use constant NEWRELIC_ROOT_SEGMENT => 0;
 use constant NEWRELIC_AUTOSCOPE    => 1;
+use constant NEWRELIC_STATUS_CODE_SHUTDOWN => 0;
+use constant NEWRELIC_STATUS_CODE_STARTING => 1;
+use constant NEWRELIC_STATUS_CODE_STOPPING => 2;
+use constant NEWRELIC_STATUS_CODE_STARTED  => 3;
 
 # ABSTRACT: Procedural interface for NewRelic APM
 # VERSION
@@ -38,7 +42,7 @@ use constant NEWRELIC_AUTOSCOPE    => 1;
  # use it:
  my $tx = newrelic_transaction_begin;
  ...
- my $status = newrelic_transaction_end $tx;
+ my $rc = newrelic_transaction_end $tx;
 
 =head1 DESCRIPTION
 
@@ -100,7 +104,7 @@ BEGIN {
 All functions are exported by default.  You can explicitly specify just the functions that you want in the
 usual L<Exporter> way if you prefer.
 
-Functions that return a C<$status> will return one of these codes (NEWRELIC_RETURN_CODE_OK is 0, the others
+Functions that return a C<$rc> will return one of these codes (NEWRELIC_RETURN_CODE_OK is 0, the others
 are negative values):
 
 =over 4
@@ -123,9 +127,9 @@ are negative values):
 
 =back
 
-Functions that return a C<$tx> will return a transaction id on success, and a (negative) C<$status> code on failure.
+Functions that return a C<$tx> will return a transaction id on success, and a (negative) C<$rc> code on failure.
 
-Functions that return a C<$seg> will return a segment id on success, and a (negative) C<$status> code on failure.
+Functions that return a C<$seg> will return a segment id on success, and a (negative) C<$rc> code on failure.
 
 Functions that return a C<$address> are the address to a C function that can be passed to other C<newrelic_> functions as appropriate.
 
@@ -136,7 +140,7 @@ For functions that take a C<$tx> argument, you can pass in NEWRELIC_AUTOSCOPE in
 
 =head2 newrelic_init
 
- my $status = newrelic_init $license_key, $app_name, $app_language, $app_language_version;
+ my $rc = newrelic_init $license_key, $app_name, $app_language, $app_language_version;
 
 Initialize the connection to NewRelic.
 
@@ -206,72 +210,72 @@ Returns the transaction's ID on success, else negative warning code or error cod
 
 =head2 newrelic_transaction_set_name
 
- my $status = newrelic_transaction_set_name $tx, $name;
+ my $rc = newrelic_transaction_set_name $tx, $name;
 
 Sets the transaction name.
 
 =head2 newrelic_transaction_set_request_url
 
- my $status = newrelic_transaction_set_request_url $tx, $url;
+ my $rc = newrelic_transaction_set_request_url $tx, $url;
 
 Sets the transaction URL.
 
 =head2 newrelic_transaction_set_max_trace_segments
 
- my $status = newrelic_transaction_set_max_trace_segments $tx, $max;
+ my $rc = newrelic_transaction_set_max_trace_segments $tx, $max;
 
 Sets the maximum trace section for the transaction.
 
 =head2 newrelic_transaction_set_category
 
- my $status = newrelic_transaction_set_category $tx, $category;
+ my $rc = newrelic_transaction_set_category $tx, $category;
 
 Sets the transaction category.
 
 =head2 newrelic_transaction_set_type_web
 
- my $status = newrelic_transaction_set_type_web $tx;
+ my $rc = newrelic_transaction_set_type_web $tx;
 
 Sets the transaction type to 'web'
 
 =head2 newrelic_transaction_set_type_other
 
- my $status = newrelic_transaction_set_type_other $tx;
+ my $rc = newrelic_transaction_set_type_other $tx;
 
 Sets the transaction type to 'other'
 
 =head2 newrelic_transaction_add_attribute
 
- my $status = newrelic_transaction_add_attribute $tx, $key => $value;
+ my $rc = newrelic_transaction_add_attribute $tx, $key => $value;
 
 Adds the given attribute (key/value pair) for the transaction.
 
 =head2 newrelic_transaction_notice_error
 
- my $status = newrelic_transaction_notice_error $tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter;
+ my $rc = newrelic_transaction_notice_error $tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter;
 
 Identify an error that occurred during the transaction. The first identified
 error is sent with each transaction.
 
 =head2 newrelic_transaction_end
 
- my $status = newrelic_transaction_end $tx;
+ my $rc = newrelic_transaction_end $tx;
 
 =head2 newrelic_record_metric
 
- my $status = newrelic_record_metric $key => $value;
+ my $rc = newrelic_record_metric $key => $value;
 
 Records the given metric (key/value pair).  The C<$value> should be a floating point.
 
 =head2 newrelic_record_cpu_usage
 
- my $status = newrelic_record_cpu_usage $cpu_user_time_seconds, $cpu_usage_percent;
+ my $rc = newrelic_record_cpu_usage $cpu_user_time_seconds, $cpu_usage_percent;
 
 Records the CPU usage. C<$cpu_user_time_seconds> and C<$cpu_usage_percent> are floating point values.
 
 =head2 newrelic_record_memory_usage
 
- my $status = newrelic_record_memory_usage $memory_megabytes;
+ my $rc = newrelic_record_memory_usage $memory_megabytes;
 
 Records the memory usage. C<$memory_megabytes> is a floating point value.
 
@@ -331,7 +335,7 @@ create a closure with L<FFI::Platypus>, like so:
  
  $ffi->type('(string)->opaque' => 'obfuscator_t');
  my $myobfuscator_closure = $ffi->closure(\&myobfuscator);
- my $myobfuscator_ptr     = $ffi->cast('obfuscator_t' => 'opsque', $myobfuscator_closure);
+ my $myobfuscator_ptr     = $ffi->cast('obfuscator_t' => 'opaque', $myobfuscator_closure);
  
  newrelic_segment_datastore_begin $tx, $seg, $table, $sql, $rollup, $myobfuscator_ptr;
  ...
@@ -351,7 +355,7 @@ Begins a new external segment.  C<$parent_seg> is a parent segment id (C<undef> 
 
 =head2 newrelic_segment_end
 
- my $status = newrelic_segment_end $tx, $seg;
+ my $rc = newrelic_segment_end $tx, $seg;
 
 End the given segment.
 
@@ -408,7 +412,7 @@ use constant newrelic_basic_literal_replacement_obfuscator => $ffi->find_symbol(
 
 =head2 newrelic_request_shutdown
 
- my $status = newrelic_request_shutdown $reason;
+ my $rc = newrelic_request_shutdown $reason;
 
 Tell the Collector Client to shutdown and stop reporting application performance data to New Relic.
 
@@ -427,6 +431,40 @@ C<$set_enabled>  0 to disable, 1 to enable
 =cut
 
 $ffi->attach( newrelic_enable_instrumentation => ['int'] => 'void' );
+
+## TODO: make this work
+#=head2 newrelic_register_status_callback
+#
+# newrelic_register_status_callback $callback;
+#
+#Register a function to be called whenever the status of the Collector Client
+#changes.
+#
+#=cut
+#
+#$ffi->type('(int)->void' => 'status_callback_t');
+#$ffi->attach( newrelic_register_status_callback => ['opaque'] => 'void' => sub {
+#  my($xsub, $cb) = @_;
+#
+#  state $cb_code;
+#  state $cb_closure;
+#  state $cb_ptr;
+#  
+#  if(ref $cb eq 'CODE')
+#  {
+#    $cb_code = $cb;
+#    $cb_closure = $ffi->closure($cb);
+#    $cb_ptr     = $ffi->cast(status_callback_t => 'opaque', $cb_closure);
+#    $xsub->($cb_ptr);
+#  }
+#  else
+#  {
+#    undef $cb_code;
+#    undef $cb_closure;
+#    undef $cb_ptr;
+#    $xsub->($cb);
+#  }
+#});
 
 our @EXPORT = sort grep /^newrelic_/i, keys %NewRelic::Agent::FFI::Procedural::;
 

@@ -94,7 +94,7 @@ Instantiates a new NewRelic::Agent client object.  Options include:
 
 # METHODS
 
-Methods noted below that return `$status` return 0 for success or non-zero for failure.  See the NR SDK documentation for error codes.
+Methods noted below that return `$rc` return 0 for success or non-zero for failure.  See the NR SDK documentation for error codes.
 
 ## embed\_collector
 
@@ -104,7 +104,7 @@ Embeds the collector agent for harvesting NewRelic data. This should be called b
 
 ## init
 
-    my $status = $agent->init;
+    my $rc = $agent->init;
 
 Initialize the connection to NewRelic.
 
@@ -118,72 +118,72 @@ Returns the transaction's ID on success, else negative warning code or error cod
 
 ## set\_transaction\_name
 
-    my $status = $agent->set_transaction_name($tx, $name);
+    my $rc = $agent->set_transaction_name($tx, $name);
 
 Sets the transaction name.
 
 ## set\_transaction\_request\_url
 
-    my $status = $agent->set_transaction_request_url($tx, $url);
+    my $rc = $agent->set_transaction_request_url($tx, $url);
 
 Sets the transaction URL.
 
 ## set\_transaction\_max\_trace\_segments
 
-    my $status = $agent->set_transaction_max_trace_segments($tx, $max);
+    my $rc = $agent->set_transaction_max_trace_segments($tx, $max);
 
 Sets the maximum trace section for the transaction.
 
 ## set\_transaction\_category
 
-    my $status = $agent->set_transaction_category($tx, $category);
+    my $rc = $agent->set_transaction_category($tx, $category);
 
 Sets the transaction category.
 
 ## set\_transaction\_type\_web
 
-    my $status = $agent->set_transaction_type_web($tx);
+    my $rc = $agent->set_transaction_type_web($tx);
 
 Sets the transaction type to 'web'
 
 ## set\_transaction\_type\_other
 
-    my $status = $agent->set_transaction_type_other($tx);
+    my $rc = $agent->set_transaction_type_other($tx);
 
 Sets the transaction type to 'other'
 
 ## add\_transaction\_attribute
 
-    my $status = $agent->add_transaction_attribute($tx, $key => $value);
+    my $rc = $agent->add_transaction_attribute($tx, $key => $value);
 
 Adds the given attribute (key/value pair) for the transaction.
 
 ## notice\_transaction\_error
 
-    my $status = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
+    my $rc = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
 
 Identify an error that occurred during the transaction. The first identified
 error is sent with each transaction.
 
 ## end\_transaction
 
-    my $status = $agent->end_transaction($tx);
+    my $rc = $agent->end_transaction($tx);
 
 ## record\_metric
 
-    my $status = $agent->record_metric($key => $value);
+    my $rc = $agent->record_metric($key => $value);
 
 Records the given metric (key/value pair).  The `$value` should be a floating point.
 
 ## record\_cpu\_usage
 
-    my $status = $agent->record_cpu_usage($cpu_user_time_seconds, $cpu_usage_percent);
+    my $rc = $agent->record_cpu_usage($cpu_user_time_seconds, $cpu_usage_percent);
 
 Records the CPU usage. `$cpu_user_time_seconds` and `$cpu_usage_percent` are floating point values.
 
 ## record\_memory\_usage
 
-    my $status = $agent->record_memory_usage($memory_megabytes);
+    my $rc = $agent->record_memory_usage($memory_megabytes);
 
 Records the memory usage. `$memory_megabytes` is a floating point value.
 
@@ -207,7 +207,7 @@ Begins a new external segment.  `$parent_seg` is a parent segment id (`undef` no
 
 ## end\_segment
 
-    my $status = $agent->end_segment($tx, $seg);
+    my $rc = $agent->end_segment($tx, $seg);
 
 End the given segment.
 

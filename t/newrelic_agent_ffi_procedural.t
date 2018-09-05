@@ -71,19 +71,30 @@ subtest 'newrelic_segment_datastore_begin' => sub {
   
   sleep rand .5;
   
-  my $status = newrelic_segment_end $tx, $seg;
-  is $status, 0, 'newrelic_segment_end';
+  my $rc = newrelic_segment_end $tx, $seg;
+  is $rc, 0, 'newrelic_segment_end';
   
   newrelic_transaction_end $tx;
   ok 1, 'newrelic_transaction_end';
 };
 
+#use Test2::Tools::Subtest qw/subtest_streamed/;
+
 subtest 'newrelic_request_shutdown' => sub {
 
-  my $status = newrelic_request_shutdown 'Because I said so';
+  #our $status;
+  #sub status_cb {
+  #  $status = shift;
+  #};
+  #note 'here1';
+  #newrelic_register_status_callback \&status_cb;
+  #note 'here2';
+
+  my $rc = newrelic_request_shutdown 'Because I said so';
   
-  is $status, 0;
-  note "status = $status";
+  is $rc, 0;
+  note "rc     = $rc";
+  #note "status = $status";
 
 };
 
