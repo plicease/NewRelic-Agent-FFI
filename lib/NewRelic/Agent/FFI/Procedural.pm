@@ -430,8 +430,6 @@ $ffi->attach( newrelic_enable_instrumentation => ['int'] => 'void' );
 
 our @EXPORT = sort grep /^newrelic_/i, keys %NewRelic::Agent::FFI::Procedural::;
 
-# TODO: example for using newrelic_segment_datastore_begin with non default obfuscator
-
 1;
 
 =head1 SEE ALSO
