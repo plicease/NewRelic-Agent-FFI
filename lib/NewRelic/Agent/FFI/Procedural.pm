@@ -184,6 +184,8 @@ $ffi->attach( newrelic_init => [ 'opaque', 'opaque', 'opaque', 'opaque' ] => 'in
 
   # cannot find documentation to confirm, but NR doesn't appear to copy these strings,
   # so we copy them.  But we want to free the old strings if we re-init.
+  # NB. it's not even clear to me from the NR doco that you should be calling _init more than
+  # once, but we've been doing it in production via NewRelic::Agent so...
   state $olds = [];
   foreach my $old (@$olds)
   {
