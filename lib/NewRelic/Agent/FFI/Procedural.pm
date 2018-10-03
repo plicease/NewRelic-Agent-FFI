@@ -33,7 +33,7 @@ use constant NEWRELIC_STATUS_CODE_STARTED  => 3;
  # enable embedded mode:
  newrelic_register_message_handler newrelic_message_handler;
  
- # initalize:
+ # initialize:
  newrelic_init
    'abc123'     # license key
    'REST API'   # app name
