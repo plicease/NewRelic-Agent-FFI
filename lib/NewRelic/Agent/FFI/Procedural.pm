@@ -61,7 +61,7 @@ how things work under the hood, you might be confused into believing that you ca
 
 =item Object oriented interface is slower
 
-Because the C<$agent> instance needs to be shifted off the stack before calling the underlying C code there is a lot more overhead in the
+Because the unused C<$agent> instance needs to be shifted off the stack before calling the underlying C code there is a lot more overhead in the
 object oriented interface.
 
 =item Functions aren't renamed
