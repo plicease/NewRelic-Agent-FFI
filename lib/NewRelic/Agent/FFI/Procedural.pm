@@ -57,7 +57,7 @@ the author believes this module to be better than L<NewRelic::Agent::FFI> becaus
 =item Object oriented interface does represent or add anything
 
 The L<NewRelic::Agent> instance that you create doesn't represent anything in the NewRelic Agent SDK.  In fact if you don't understand
-how things work under the hood, you might be confused into believing that you can initialize agent instances in the same process.
+how things work under the hood, you might be confused into believing that you can initialize multiple agent instances in the same process.
 
 =item Object oriented interface is slower
 
