@@ -235,6 +235,20 @@ Get the language name (usually `perl`).
 
 Get the language version.
 
+# CAVEATS
+
+## Platform Limitations
+
+The SDK binaries provided by New Relic only work on Linux x86\_64.  The binaries are labeled
+as a "beta" and were released in July 2016.  It doesn't seem likely that New Relic will be
+releasing new versions of the SDK.  The author of this module has had good success getting
+this module to work on Ubuntu Precise and Xenial, and heard from user feedback that it works
+with Bionic.  I have heard that it does NOT work with CentOS 7.  Your mileage may vary.
+
+## Not Fork Safe!
+
+Bad things will happen if you call init before forking.  So don't do that.
+
 # SEE ALSO
 
 - [NewRelic::Agent::FFI::Procedural](https://metacpan.org/pod/NewRelic::Agent::FFI::Procedural)
