@@ -78,8 +78,6 @@ subtest 'newrelic_segment_datastore_begin' => sub {
   ok 1, 'newrelic_transaction_end';
 };
 
-#use Test2::Tools::Subtest qw/subtest_streamed/;
-
 subtest 'newrelic_request_shutdown' => sub {
 
   #our $status;
