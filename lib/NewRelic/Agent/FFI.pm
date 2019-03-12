@@ -3,8 +3,6 @@ package NewRelic::Agent::FFI;
 use strict;
 use warnings;
 use 5.010;
-use FFI::Platypus 0.56;
-use FFI::CheckLib ();
 use NewRelic::Agent::FFI::Procedural ();
 
 # ABSTRACT: Perl Agent for NewRelic APM
