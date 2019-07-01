@@ -6,6 +6,20 @@ use FFI::Platypus::Memory qw( strdup free );
 
 my $license_key = $ENV{NEWRELIC_AGENT_FFI_TEST};
 
+subtest 'diag' => sub {
+
+  diag '';
+  diag '';
+  diag '';
+
+  diag "lib=$_" for @NewRelic::Agent::FFI::Procedural::lib;
+
+  diag '';
+  diag '';
+
+  pass 'good stuff';
+};
+
 subtest 'export' => sub {
 
   imported_ok 'newrelic_init';
