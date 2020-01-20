@@ -190,7 +190,7 @@ $ffi->attach( newrelic_init => [ 'opaque', 'opaque', 'opaque', 'opaque' ] => 'in
     free($old);
   }
   $olds = \@new;
-  
+
   $ret;
 });
 
@@ -315,10 +315,10 @@ create a closure with L<FFI::Platypus>, like so:
  {
    # input SQL
    my($sql) = @_;
-   
+ 
    # make some kind of transformation
    $sql =~ tr/a-z/z-a/;
-   
+ 
    # because C has a different ownership model than Perl for functions
    # that return a string, you need to create a C pointer to a copy of
    # the return value.  On the next call we will free the previous copy.
@@ -443,7 +443,7 @@ $ffi->attach( newrelic_enable_instrumentation => ['int'] => 'void' );
 #  state $cb_code;
 #  state $cb_closure;
 #  state $cb_ptr;
-#  
+#
 #  if(ref $cb eq 'CODE')
 #  {
 #    $cb_code = $cb;
