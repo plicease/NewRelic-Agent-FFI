@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.10      2020-05-14 16:24:08 -0600
   - Mark distribution as deprecated.
 
 0.09      2019-07-01 20:01:17 -0400
