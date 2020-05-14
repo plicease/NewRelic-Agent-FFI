@@ -23,7 +23,7 @@ use constant NEWRELIC_STATUS_CODE_STARTING => 1;
 use constant NEWRELIC_STATUS_CODE_STOPPING => 2;
 use constant NEWRELIC_STATUS_CODE_STARTED  => 3;
 
-# ABSTRACT: Procedural interface for NewRelic APM
+# ABSTRACT: (Deprecated) Procedural interface for NewRelic APM
 # VERSION
 
 =head1 SYNOPSIS

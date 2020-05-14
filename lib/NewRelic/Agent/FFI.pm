@@ -5,7 +5,7 @@ use warnings;
 use 5.010;
 use NewRelic::Agent::FFI::Procedural ();
 
-# ABSTRACT: Perl Agent for NewRelic APM
+# ABSTRACT: (Deprecated) Perl Agent for NewRelic APM
 # VERSION
 
 =head1 SYNOPSIS

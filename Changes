@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Mark distribution as deprecated.
 
 0.09      2019-07-01 20:01:17 -0400
   - Requrie Alien::nragent 0.06 if the system New Relic SDK libraries
