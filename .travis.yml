@@ -20,6 +20,10 @@ jobs:
     - env: CIP_TAG=5.28-jessie
     - env: CIP_TAG=5.28-xenial
 
+branches:
+  only:
+    - master
+
 cache:
   directories:
     - "$HOME/.cip"
