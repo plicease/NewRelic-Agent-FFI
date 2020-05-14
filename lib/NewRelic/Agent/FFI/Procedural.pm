@@ -46,6 +46,9 @@ use constant NEWRELIC_STATUS_CODE_STARTED  => 3;
 
 =head1 DESCRIPTION
 
+B<NOTE>: This module is deprecated.  It is based on the NewRelic Agent SDK, which was only
+ever released as beta software.  Please use L<NewFangle> instead.
+
 This module provides bindings for the L<NewRelic|https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk> Agent SDK.
 
 Unlike L<NewRelic::Agent::FFI>, this is NOT a drop in replacement for L<NewRelic::Agent>.  The author believes this interface is better.

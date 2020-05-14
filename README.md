@@ -21,6 +21,9 @@ my $err_id = $agent->end_transaction($txn_id);
 
 # DESCRIPTION
 
+**NOTE**: This module is deprecated.  It is based on the NewRelic Agent SDK, which was only
+ever released as beta software.  Please use [NewFangle](https://metacpan.org/pod/NewFangle) instead.
+
 This module provides bindings for the [NewRelic](https://docs.newrelic.com/docs/agents/agent-sdk/getting-started/new-relic-agent-sdk) Agent SDK.
 
 It is a drop in replacement for [NewRelic::Agent](https://metacpan.org/pod/NewRelic::Agent) that is implemented using [FFI::Platypus](https://metacpan.org/pod/FFI::Platypus) instead of XS and C++.  If you are writing
