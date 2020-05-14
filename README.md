@@ -1,21 +1,23 @@
-# NewRelic::Agent::FFI [![Build Status](https://secure.travis-ci.org/plicease/NewRelic-Agent-FFI.png)](http://travis-ci.org/plicease/NewRelic-Agent-FFI)
+# NewRelic::Agent::FFI [![Build Status](https://travis-ci.org/plicease/NewRelic-Agent-FFI.svg)](http://travis-ci.org/plicease/NewRelic-Agent-FFI)
 
-Perl Agent for NewRelic APM
+(Deprecated) Perl Agent for NewRelic APM
 
 # SYNOPSIS
 
-    use NewRelic::Agent::FFI;
-    
-    my $agent = NewRelic:Agent::FFI->new(
-      license_key => 'abc123',
-      app_name    => 'REST API',
-    );
-    
-    $agent->embed_collector;
-    $agent->init;
-    my $txn_id = $agent->begin_transaction;
-    ...
-    my $err_id = $agent->end_transaction($txn_id);
+```perl
+use NewRelic::Agent::FFI;
+
+my $agent = NewRelic:Agent::FFI->new(
+  license_key => 'abc123',
+  app_name    => 'REST API',
+);
+
+$agent->embed_collector;
+$agent->init;
+my $txn_id = $agent->begin_transaction;
+...
+my $err_id = $agent->end_transaction($txn_id);
+```
 
 # DESCRIPTION
 
@@ -64,7 +66,9 @@ Why use the other module instead of this one?
 
 ## new
 
-    my $agent = NewRelic::Agent::FFI->new(%options);
+```perl
+my $agent = NewRelic::Agent::FFI->new(%options);
+```
 
 Instantiates a new NewRelic::Agent client object.  Options include:
 
@@ -98,19 +102,25 @@ Methods noted below that return `$rc` return 0 for success or non-zero for failu
 
 ## embed\_collector
 
-    $agent->embed_collector;
+```
+$agent->embed_collector;
+```
 
 Embeds the collector agent for harvesting NewRelic data. This should be called before `init`, if the agent is being used in Embedded mode and not Daemon mode.
 
 ## init
 
-    my $rc = $agent->init;
+```perl
+my $rc = $agent->init;
+```
 
 Initialize the connection to NewRelic.
 
 ## begin\_transaction
 
-    my $tx = $agent->begin_transaction;
+```perl
+my $tx = $agent->begin_transaction;
+```
 
 Identifies the beginning of a transaction, which is a timed operation consisting of multiple segments. By default, transaction type is set to `WebTransaction` and transaction category is set to `Uri`.
 
@@ -118,120 +128,160 @@ Returns the transaction's ID on success, else negative warning code or error cod
 
 ## set\_transaction\_name
 
-    my $rc = $agent->set_transaction_name($tx, $name);
+```perl
+my $rc = $agent->set_transaction_name($tx, $name);
+```
 
 Sets the transaction name.
 
 ## set\_transaction\_request\_url
 
-    my $rc = $agent->set_transaction_request_url($tx, $url);
+```perl
+my $rc = $agent->set_transaction_request_url($tx, $url);
+```
 
 Sets the transaction URL.
 
 ## set\_transaction\_max\_trace\_segments
 
-    my $rc = $agent->set_transaction_max_trace_segments($tx, $max);
+```perl
+my $rc = $agent->set_transaction_max_trace_segments($tx, $max);
+```
 
 Sets the maximum trace section for the transaction.
 
 ## set\_transaction\_category
 
-    my $rc = $agent->set_transaction_category($tx, $category);
+```perl
+my $rc = $agent->set_transaction_category($tx, $category);
+```
 
 Sets the transaction category.
 
 ## set\_transaction\_type\_web
 
-    my $rc = $agent->set_transaction_type_web($tx);
+```perl
+my $rc = $agent->set_transaction_type_web($tx);
+```
 
 Sets the transaction type to 'web'
 
 ## set\_transaction\_type\_other
 
-    my $rc = $agent->set_transaction_type_other($tx);
+```perl
+my $rc = $agent->set_transaction_type_other($tx);
+```
 
 Sets the transaction type to 'other'
 
 ## add\_transaction\_attribute
 
-    my $rc = $agent->add_transaction_attribute($tx, $key => $value);
+```perl
+my $rc = $agent->add_transaction_attribute($tx, $key => $value);
+```
 
 Adds the given attribute (key/value pair) for the transaction.
 
 ## notice\_transaction\_error
 
-    my $rc = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
+```perl
+my $rc = $agent->notice_transaction_error($tx, $exception_type, $error_message, $stack_trace, $stack_frame_delimiter);
+```
 
 Identify an error that occurred during the transaction. The first identified
 error is sent with each transaction.
 
 ## end\_transaction
 
-    my $rc = $agent->end_transaction($tx);
+```perl
+my $rc = $agent->end_transaction($tx);
+```
 
 ## record\_metric
 
-    my $rc = $agent->record_metric($key => $value);
+```perl
+my $rc = $agent->record_metric($key => $value);
+```
 
 Records the given metric (key/value pair).  The `$value` should be a floating point.
 
 ## record\_cpu\_usage
 
-    my $rc = $agent->record_cpu_usage($cpu_user_time_seconds, $cpu_usage_percent);
+```perl
+my $rc = $agent->record_cpu_usage($cpu_user_time_seconds, $cpu_usage_percent);
+```
 
 Records the CPU usage. `$cpu_user_time_seconds` and `$cpu_usage_percent` are floating point values.
 
 ## record\_memory\_usage
 
-    my $rc = $agent->record_memory_usage($memory_megabytes);
+```perl
+my $rc = $agent->record_memory_usage($memory_megabytes);
+```
 
 Records the memory usage. `$memory_megabytes` is a floating point value.
 
 ## begin\_generic\_segment
 
-    my $seg = $agent->begin_generic_segment($tx, $parent_seg, $name);
+```perl
+my $seg = $agent->begin_generic_segment($tx, $parent_seg, $name);
+```
 
 Begins a new generic segment.  `$parent_seg` is a parent segment id (`undef` no parent).  `$name` is a string.
 
 ## begin\_datastore\_segment
 
-    my $seg = $agent->begin_datastore_segment($tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name);
+```perl
+my $seg = $agent->begin_datastore_segment($tx, $parent_seg, $table, $operation, $sql, $sql_trace_rollup_name);
+```
 
 Begins a new datastore segment.  `$parent_seg` is a parent segment id (`undef` no parent).
 
 ## begin\_external\_segment
 
-    my $seg = $agent->begin_external_segment($tx, $parent_seg, $host, $name);
+```perl
+my $seg = $agent->begin_external_segment($tx, $parent_seg, $host, $name);
+```
 
 Begins a new external segment.  `$parent_seg` is a parent segment id (`undef` no parent).
 
 ## end\_segment
 
-    my $rc = $agent->end_segment($tx, $seg);
+```perl
+my $rc = $agent->end_segment($tx, $seg);
+```
 
 End the given segment.
 
 ## get\_license\_key
 
-    my $key = $agent->get_license_key;
+```perl
+my $key = $agent->get_license_key;
+```
 
 Get the license key.
 
 ## get\_app\_name
 
-    my $name = $agent->get_app_name;
+```perl
+my $name = $agent->get_app_name;
+```
 
 Get the application name.
 
 ## get\_app\_language
 
-    my $lang = $agent->get_app_language;
+```perl
+my $lang = $agent->get_app_language;
+```
 
 Get the language name (usually `perl`).
 
 ## get\_app\_language\_version
 
-    my $version = $agent->get_app_language_version;
+```perl
+my $version = $agent->get_app_language_version;
+```
 
 Get the language version.
 
